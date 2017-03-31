@@ -82,6 +82,7 @@ public class FilmDetails extends AppCompatActivity implements TrailerAdapter.Tra
         mAddtoFavButton = (Button) findViewById(R.id.add_favourite_button);
 
         mTrailersRV = (RecyclerView) findViewById(R.id.trailers_recycler_view);
+        mTrailersRV.setHasFixedSize(true);
         mTrailerAdapter = new TrailerAdapter(this, this);
         mLayoutManagerT = new LinearLayoutManager(this);
         mTrailersRV.setLayoutManager(mLayoutManagerT);
@@ -262,11 +263,22 @@ public class FilmDetails extends AppCompatActivity implements TrailerAdapter.Tra
 
 
     @Override
-    public void onClick(String url) {
+    public void onClick(String url,int vId) {
         Context context = this;
+
         Log.v("CASLDKA ASLK :  ", url);
-        context.startActivity(new Intent(ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v="+url)));
+        if(vId==R.id.trailer_playbutton){
+            context.startActivity(new Intent(ACTION_VIEW, Uri.parse(YOUTUBE_BASE_URL+url)));
+        }else if(vId==R.id.trailer_share){
+            Intent sendIntent = new Intent();
+            sendIntent.setAction(Intent.ACTION_SEND);
+            sendIntent.putExtra(Intent.EXTRA_TEXT, YOUTUBE_BASE_URL+url);
+            sendIntent.setType("text/plain");
+            startActivity(sendIntent);
+        }
+
     }
+
 
     private void showTrailerDataView() {
         mTrailersRV.setVisibility(VISIBLE);

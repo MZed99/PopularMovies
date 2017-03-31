@@ -2,10 +2,12 @@ package com.example.android.popularmovies;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
@@ -42,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements FilmAdapterOnClic
     private String SORT_BY = "popular";
     private String API_KEY = "api_key";
     private String txtJsonToParse;
+
     private URL url;
     public boolean isFavo = false;
     private static final int LOADER_ID = 0;
@@ -55,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements FilmAdapterOnClic
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
         Log.v("MainActivity", "WORKING    ");
 
@@ -64,8 +68,10 @@ public class MainActivity extends AppCompatActivity implements FilmAdapterOnClic
 
         mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
         mRecyclerView.setHasFixedSize(true);
+        if (getResources().getConfiguration().orientation== Configuration.ORIENTATION_PORTRAIT){
+            mLayoutManager = new GridLayoutManager(this, 2);
+        }else mLayoutManager = new GridLayoutManager(this,3);
 
-        mLayoutManager = new GridLayoutManager(this, 2);
 
 
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -276,7 +282,7 @@ public class MainActivity extends AppCompatActivity implements FilmAdapterOnClic
             mAdapter.setFilmData(null);
             SORT_BY = "top_rated";
             new FetchFilmTask().execute(FILMREQUEST_BASE_URL + SORT_BY);
-        } else {
+        } else if(id == R.id.menuFavourites){
             isFavo = true;
             mAdapter.setFilmData(null);
 
@@ -287,6 +293,35 @@ public class MainActivity extends AppCompatActivity implements FilmAdapterOnClic
         return super.onOptionsItemSelected(item);
     }
 
+    Parcelable mListState;
+    String LIST_STATE_KEY="save";
+    @Override
+    protected void onSaveInstanceState(Bundle state){
+        super.onSaveInstanceState(state);
+
+        mListState=mLayoutManager.onSaveInstanceState();
+        state.putParcelable(LIST_STATE_KEY,mListState);
+    }
+    @Override
+    protected void onRestoreInstanceState(Bundle state) {
+        super.onRestoreInstanceState(state);
+
+        // Retrieve list state and list/item positions
+        if(state != null)
+            mListState = state.getParcelable(LIST_STATE_KEY);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (mListState != null) {
+            mLayoutManager.onRestoreInstanceState(mListState);
+            if (getResources().getConfiguration().orientation== Configuration.ORIENTATION_PORTRAIT){
+                mLayoutManager = new GridLayoutManager(this, 2);
+            }else mLayoutManager = new GridLayoutManager(this,3);
+        }
+    }
 
 }
 

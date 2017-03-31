@@ -20,13 +20,17 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.ViewHold
     private Context mContext;
     private final TrailerAdapterOnClickHandler mClickHandler;
 
+
     public interface TrailerAdapterOnClickHandler{
-        void onClick(String url);
+        void onClick(String url,int vId);
     }
+
+
 
     public TrailerAdapter(TrailerAdapterOnClickHandler clickHandler,Context context){
         this.mContext=context;
         mClickHandler=clickHandler;
+
     }
     public void setTrailerData(ArrayList<String> urls){
         mUrls=urls;
@@ -55,18 +59,25 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.ViewHold
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         private TextView numbTrail;
         private ImageView playButton;
+        private ImageView shareButton;
         public ViewHolder(View view){
             super(view);
             playButton = (ImageView) view.findViewById(R.id.trailer_playbutton);
             numbTrail = (TextView) view.findViewById(R.id.trailed_item_id);
+            shareButton = (ImageView) view.findViewById(R.id.trailer_share);
             playButton.setOnClickListener(this);
+            shareButton.setOnClickListener(this);
+
         }
 
         @Override
         public void onClick(View v) {
+            int id;
+            id=v.getId();
             int adapterPosition = getAdapterPosition();
             String url=mUrls.get(adapterPosition);
-            mClickHandler.onClick(url);
+            mClickHandler.onClick(url,id);
         }
+
     }
 }
