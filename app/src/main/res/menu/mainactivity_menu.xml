@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:title="@string/sort_by"
+        app:showAsAction="ifRoom">
+        <menu>
+            <item
+                android:id="@+id/menuSortPopular"
+                android:title="@string/popular" />
+            <item
+                android:id="@+id/menuSortRating"
+                android:title="@string/ratings" />
+            <item
+                android:id="@+id/menuFavourites"
+                android:title="@string/favourites"/>
+        </menu>
+    </item>
+</menu>
